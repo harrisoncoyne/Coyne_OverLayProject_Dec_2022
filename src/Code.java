@@ -19,9 +19,13 @@ public class Code implements ActionListener {
     private JMenuBar mb;
     private JMenu file, edit, help;
     private JMenuItem cut, copy, paste, selectAll;
-    private JTextArea url1, search;
+    private JTextField url1, search;
     private int WIDTH = 800;
     private int HEIGHT = 700;
+
+    public JTextArea results;
+    public JScrollPane scroll;
+    public URL url2;
 
 
     public Code() {
@@ -37,29 +41,30 @@ public class Code implements ActionListener {
     private void prepareGUI() {
         mainFrame = new JFrame("Java SWING Examples");
         mainFrame.setSize(WIDTH, HEIGHT);
-        mainFrame.setLayout(new GridLayout(8, 1)); //change to something other than GridLayout
+        mainFrame.setLayout(new GridLayout(6, 1)); //change to something other than GridLayout
 //        mainFrame.setLayout(new FlowLayout());
 
         mb = new JMenuBar();
 
-        url1 = new JTextArea();
-        url1.setBounds(10, 10, 100, 10);
+        url1 = new JTextField("https://www.");
+//        url1.setBounds(10, 10, 100, 10);
 
-        search = new JTextArea();
-        search.setBounds(10, 500, 100, 10);
+        search = new JTextField();
+//        search.setBounds(10, 500, 100, 10);
 
         //headerLabel = new JLabel("url", JLabel.CENTER);
 
-        urlLabel = new JLabel("url", JLabel.LEFT);
-        urlLabel.setSize(350, 100);
+//        urlLabel = new JLabel("url (don't type: 'https://www.')", JLabel.CENTER);
+        urlLabel = new JLabel("url", JLabel.CENTER);
+//        urlLabel.setSize(350, 100);
 
-        searchLabel = new JLabel("search term", JLabel.LEFT);
-        searchLabel.setSize(350, 100);
+        searchLabel = new JLabel("search term", JLabel.CENTER);
+//        searchLabel.setSize(350, 100);
 
-        resultSection = new JLabel("results", JLabel.CENTER);
-        resultSection.setSize(350, 100);
+//        resultSection = new JLabel("results", JLabel.CENTER);
+//        resultSection.setSize(350, 100);
 
-        mainFrame.add(mb);
+//        mainFrame.add(mb);
 
         mainFrame.add(urlLabel);
 
@@ -75,8 +80,8 @@ public class Code implements ActionListener {
 
 
 
-        headerLabel = new JLabel("", JLabel.CENTER);
-        statusLabel = new JLabel("", JLabel.CENTER);
+        headerLabel = new JLabel("1", JLabel.CENTER);
+        statusLabel = new JLabel("2", JLabel.CENTER);
         statusLabel.setSize(350, 100);
 
         mainFrame.addWindowListener(new WindowAdapter() {
@@ -90,7 +95,10 @@ public class Code implements ActionListener {
 
 //        mainFrame.add(headerLabel);
         mainFrame.add(controlPanel);
-        mainFrame.add(statusLabel);
+//        mainFrame.add(statusLabel);
+
+        JPanel panel = resultsPanel();
+        mainFrame.add(BorderLayout.CENTER, new JScrollPane(panel));
 
 
 //        mainFrame.add(resultSection);
@@ -99,6 +107,21 @@ public class Code implements ActionListener {
 
 
 
+    }
+
+    public JPanel resultsPanel() {
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(2, 1, 10, 10));
+
+        JLabel label = new JLabel("RESULTS:");
+
+        results = new JTextArea();
+
+        panel.add(label);
+        panel.add(results);
+
+        return panel;
     }
 
     private void showEventDemo() {
@@ -122,9 +145,8 @@ public class Code implements ActionListener {
 
     public void HtmlRead(){
         try {
-
-//            URL url = new URL("https://www.milton.edu/");
-            URL url = new URL("https://www." + url1.getText() + "/");
+            URL url = new URL( url1.getText() + "/");
+            URL url2;
 
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(url.openStream())
@@ -135,16 +157,28 @@ public class Code implements ActionListener {
             while ( (line = reader.readLine()) != null ) {
 
                 int start = line.indexOf("https");
-                int end1 = line.indexOf("'", start);
-                int end2 = line.indexOf("\"", start);
+                int end1 = line.indexOf("' ", start);
+                int end2 = line.indexOf("\" ", start);
 
                 if (line.contains(search.getText())) {
                     if (line.contains("https://")) {
-                        if (start >= 0 && end1 >= 0) {
-                            System.out.println(line.substring(start, end1));
-                        }
-                        if (start >= 0 && end2 >= 0) {
-                            System.out.println(line.substring(start, end2));
+                        if (!line.contains("font")) {
+                            if (start >= 0 && end1 >= 0) {
+                                System.out.println(line.substring(start, end1));
+                                results.setText(results.getText() + "\n" + line.substring(start, end1) + "\n");
+
+//                                url2 = new URL(line.substring(start, end1) + "/");
+//                                HtmlRead1();
+//                                HtmlRead();
+                            }
+                            if (start >= 0 && end2 >= 0) {
+                                System.out.println(line.substring(start, end2));
+                                results.setText(results.getText() + "\n" + line.substring(start, end2) + "\n");
+
+//                                url2 = new URL(line.substring(start, end2) + "/");
+//                                HtmlRead1();
+//                                HtmlRead();
+                            }
                         }
                     }
                 }
@@ -152,11 +186,58 @@ public class Code implements ActionListener {
 
             reader.close();
 
-        } catch(Exception ex) {
+        }
+        catch(Exception ex) {
             System.out.println(ex);
         }
 
     }
+
+//    public void HtmlRead1(){
+//        try {
+//
+//            BufferedReader reader = new BufferedReader(
+//                    new InputStreamReader(url2.openStream())
+//            );
+//
+//            String line;
+//
+//            while ( (line = reader.readLine()) != null ) {
+//
+//                int start = line.indexOf("https");
+//                int end1 = line.indexOf("' ", start);
+//                int end2 = line.indexOf("\" ", start);
+//
+////                if (line.contains(search.getText())) {
+//                    if (line.contains("https://")) {
+//                        if (!line.contains("font")) {
+//                            if (start >= 0 && end1 >= 0) {
+//                                System.out.println(line.substring(start, end1));
+//                                results.setText(results.getText() + "\n" + line.substring(start, end1));
+//
+//                                url2 = new URL(line.substring(start, end1) + "/");
+//                                HtmlRead1();
+//                            }
+//                            if (start >= 0 && end2 >= 0) {
+//                                System.out.println(line.substring(start, end2));
+//                                results.setText(results.getText() + "\n" + line.substring(start, end2));
+//
+//                                url2 = new URL(line.substring(start, end2) + "/");
+//                                HtmlRead1();
+//                            }
+//                        }
+//                    }
+//                }
+////            }
+//
+//            reader.close();
+//
+//        }
+//        catch(Exception ex) {
+//            System.out.println(ex);
+//        }
+//
+//    }
 
     private class ButtonClickListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
