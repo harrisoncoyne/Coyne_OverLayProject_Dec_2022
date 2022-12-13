@@ -21,6 +21,7 @@ public class Code implements ActionListener {
     private int HEIGHT = 700;
 
     public JTextArea results;
+    public URL url;
 
 
     public Code() {
@@ -35,7 +36,7 @@ public class Code implements ActionListener {
     private void prepareGUI() {
         mainFrame = new JFrame("Java SWING Examples");
         mainFrame.setSize(WIDTH, HEIGHT);
-        mainFrame.setLayout(new GridLayout(6, 1));
+        mainFrame.setLayout(new GridLayout(7, 1));
 
         mb = new JMenuBar();
 
@@ -57,8 +58,8 @@ public class Code implements ActionListener {
 
         mainFrame.setJMenuBar(mb);
 
-        headerLabel = new JLabel("1", JLabel.CENTER);
-        statusLabel = new JLabel("2", JLabel.CENTER);
+        headerLabel = new JLabel("", JLabel.CENTER);
+        statusLabel = new JLabel("", JLabel.CENTER);
         statusLabel.setSize(350, 100);
 
         mainFrame.addWindowListener(new WindowAdapter() {
@@ -71,6 +72,10 @@ public class Code implements ActionListener {
         controlPanel.setLayout(new FlowLayout());
 
         mainFrame.add(controlPanel);
+        mainFrame.add(statusLabel);
+
+//        JLabel title = new JLabel("results", JLabel.CENTER);
+//        mainFrame.add(title);
 
         JPanel panel = resultsPanel();
         mainFrame.add(BorderLayout.CENTER, new JScrollPane(panel));
@@ -84,13 +89,13 @@ public class Code implements ActionListener {
     public JPanel resultsPanel() {
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(2, 1, 10, 10));
+        panel.setLayout(new GridLayout(1, 1, 10, 10));
 
-        JLabel label = new JLabel("RESULTS:");
+//        JLabel label = new JLabel("RESULTS:");
 
         results = new JTextArea();
 
-        panel.add(label);
+//        panel.add(label);
         panel.add(results);
 
         return panel;
@@ -99,9 +104,9 @@ public class Code implements ActionListener {
     private void showEventDemo() {
         headerLabel.setText("Control in action: Button");
 
-        JButton okButton = new JButton("OK");
+        JButton okButton = new JButton("search");
 
-        okButton.setActionCommand("OK");
+        okButton.setActionCommand("search");
 
         okButton.addActionListener(new ButtonClickListener());
 
@@ -117,7 +122,7 @@ public class Code implements ActionListener {
 
     public void HtmlRead(){
         try {
-            URL url = new URL( url1.getText() + "/");
+            url = new URL( url1.getText() + "/");
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
 
@@ -158,7 +163,7 @@ public class Code implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             String command = e.getActionCommand();
 
-            if (command.equals("OK")) {
+            if (command.equals("search")) {
                 HtmlRead();
                 statusLabel.setText(url1.getText() + " : " + search.getText());
             }
